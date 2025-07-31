@@ -18,21 +18,47 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 
+  const router = useRouter();
+
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof registerSchema>) {}
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    const { data, error } = await authClient.signUp.email(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        callbackURL: "/dashboard",
+      },
+      {
+        onRequest: (ctx) => {
+          console.log("CONECTANDO AO BANCO", ctx);
+        },
+        onSuccess: (ctx) => {
+          console.log("CADASTRADO: ", ctx);
+          router.replace("/dashboard");
+        },
+        onError: (ctx) => {
+          console.log("ERRO AO CRIAR CONTA", ctx);
+        },
+      }
+    );
+  }
 
   return (
     // coloque um espaçamento entre os inputs com tailwindcss
@@ -42,6 +68,20 @@ export default function RegisterForm() {
           onSubmit={registerForm.handleSubmit(onSubmit)}
           className="space-y-4"
         >
+          <FormField
+            control={registerForm.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input placeholder="Gabriel Roberti" {...field} />
+                </FormControl>
+                {/* <FormDescription>Insira seu endereço de email</FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={registerForm.control}
             name="email"
