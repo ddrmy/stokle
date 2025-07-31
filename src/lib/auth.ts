@@ -10,4 +10,8 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
+  trustedOrigins: [
+    "https://fantastic-robot-jgp5qgr6pr4hj77v-3000.app.github.dev",
+    "https://localhost:3000",
+  ],
 });
