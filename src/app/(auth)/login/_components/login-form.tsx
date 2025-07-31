@@ -18,9 +18,18 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { describe } from "node:test";
+import { getTranslatedErrorMessage } from "@/lib/error_messages/login-messages";
 
 export default function LoginForm({ ...props }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
 
   const formLogin = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -30,7 +39,99 @@ export default function LoginForm({ ...props }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {}
+  // forma antiga
+  // async function onSubmit(values: z.infer<typeof loginSchema>) {
+  //   const { data, error } = await authClient.signIn.email(
+  //     {
+  //       email: values.email,
+  //       password: values.password,
+  //       // callbackURL: "/dashboard",
+  //     },
+  //     {
+  //       onRequest: (ctx) => {
+  //         toastId = toast.loading("Entrando...");
+  //         console.log("REQUISIÇÃO: ", ctx);
+  //       },
+  //       onSuccess: async (ctx) => {
+  //         toast.success("Bem-vindo!", {
+  //           id: toastId,
+  //           description: "Redirecionando...",
+  //         });
+
+  //         setTimeout(() => {
+  //           router.replace("/dashboard");
+  //         }, 1500);
+  //       },
+  //       onError: (ctx) => {
+  //         console.log("ERROR: ", ctx);
+
+  //         toast.error("Erro ao logar", {
+  //           description: getTranslatedErrorMessage(ctx.error.message),
+  //           className: "bg-purple-600 text-white border border-purple-700",
+  //           action: {
+  //             label: "Fechar",
+  //             onClick: () => {},
+  //           },
+  //         });
+  //       },
+  //     }
+  //   );
+  // }
+
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    let toastId: string | number;
+    setIsLoading(true);
+
+    try {
+      const { data } = await authClient.signIn.email(
+        {
+          email: values.email,
+          password: values.password,
+        },
+        {
+          onRequest: (ctx) => {
+            toastId = toast.loading("Entrando...");
+            // console.log("Requisição...");
+          },
+          onSuccess: async (ctx) => {
+            toast.success("Bem-Vindo!", {
+              id: toastId,
+              description: "Redirecionando...",
+            });
+
+            try {
+              await new Promise((resolve) => setTimeout(resolve, 1500));
+              router.replace("/dashboard");
+            } catch (err) {
+              console.error("Erro no redirecionamento: ", err);
+              toast.error("Erro ao redirecionar", {
+                description: "Tente novamente mais tarde.",
+              });
+            }
+          },
+          onError: (ctx) => {
+            console.error("Erro ao logar:", ctx);
+
+            toast.error("Erro ao logar", {
+              id: toastId,
+              description: getTranslatedErrorMessage(ctx.error.message),
+              action: {
+                label: "Fechar",
+                onClick: () => {},
+              },
+            });
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Erro inesperado: ", err);
+      toast.error("Erro inesperado", {
+        description: "Tente novamente mais tarde.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   console.log("formLogin", formLogin);
   return (
@@ -82,8 +183,15 @@ export default function LoginForm({ ...props }) {
             )}
           />
           <div className="flex justify-between items-center mt-4">
-            <Button type="submit">Entrar</Button>
-            <Button asChild variant={"outline"} type="button">
+            <Button disabled={isLoading} type="submit">
+              Entrar
+            </Button>
+            <Button
+              disabled={isLoading}
+              asChild
+              variant={"outline"}
+              type="button"
+            >
               <Link href="/register">Cadastre-se</Link>
             </Button>
           </div>
