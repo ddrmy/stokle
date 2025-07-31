@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 
@@ -29,6 +30,9 @@ export default function DashboardLayout({
           >
             Settings
           </Link>
+          <Button className="bg-transparent" asChild variant={"outline"}>
+            <Link href="">Sair</Link>
+          </Button>
         </nav>
       </aside>
       <main className="flex-1 bg-gray-100 p-8">{children}</main>
