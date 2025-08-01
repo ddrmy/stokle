@@ -14,4 +14,10 @@ export const auth = betterAuth({
     "https://fantastic-robot-jgp5qgr6pr4hj77v-3000.app.github.dev",
     "https://localhost:3000",
   ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60,
+    },
+  },
 });

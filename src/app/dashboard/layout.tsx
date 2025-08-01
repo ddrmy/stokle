@@ -1,12 +1,29 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
+import { authClient } from "@/lib/auth-client";
+import { redirect, useRouter } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  async function signOut() {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: (ctx) => {
+          router.replace("/");
+        },
+      },
+    });
+  }
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-60 bg-gray-900 text-white p-8 flex flex-col gap-6">
@@ -30,7 +47,12 @@ export default function DashboardLayout({
           >
             Settings
           </Link>
-          <Button className="bg-transparent" asChild variant={"outline"}>
+          <Button
+            onClick={signOut}
+            className="bg-transparent"
+            asChild
+            variant={"outline"}
+          >
             <Link href="">Sair</Link>
           </Button>
         </nav>

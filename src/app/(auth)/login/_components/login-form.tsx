@@ -39,45 +39,6 @@ export default function LoginForm({ ...props }) {
     },
   });
 
-  // forma antiga
-  // async function onSubmit(values: z.infer<typeof loginSchema>) {
-  //   const { data, error } = await authClient.signIn.email(
-  //     {
-  //       email: values.email,
-  //       password: values.password,
-  //       // callbackURL: "/dashboard",
-  //     },
-  //     {
-  //       onRequest: (ctx) => {
-  //         toastId = toast.loading("Entrando...");
-  //         console.log("REQUISIÇÃO: ", ctx);
-  //       },
-  //       onSuccess: async (ctx) => {
-  //         toast.success("Bem-vindo!", {
-  //           id: toastId,
-  //           description: "Redirecionando...",
-  //         });
-
-  //         setTimeout(() => {
-  //           router.replace("/dashboard");
-  //         }, 1500);
-  //       },
-  //       onError: (ctx) => {
-  //         console.log("ERROR: ", ctx);
-
-  //         toast.error("Erro ao logar", {
-  //           description: getTranslatedErrorMessage(ctx.error.message),
-  //           className: "bg-purple-600 text-white border border-purple-700",
-  //           action: {
-  //             label: "Fechar",
-  //             onClick: () => {},
-  //           },
-  //         });
-  //       },
-  //     }
-  //   );
-  // }
-
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     let toastId: string | number;
     setIsLoading(true);
@@ -91,7 +52,6 @@ export default function LoginForm({ ...props }) {
         {
           onRequest: (ctx) => {
             toastId = toast.loading("Entrando...");
-            // console.log("Requisição...");
           },
           onSuccess: async (ctx) => {
             toast.success("Bem-Vindo!", {
@@ -110,8 +70,6 @@ export default function LoginForm({ ...props }) {
             }
           },
           onError: (ctx) => {
-            console.error("Erro ao logar:", ctx);
-
             toast.error("Erro ao logar", {
               id: toastId,
               description: getTranslatedErrorMessage(ctx.error.message),
@@ -124,7 +82,6 @@ export default function LoginForm({ ...props }) {
         }
       );
     } catch (err) {
-      console.error("Erro inesperado: ", err);
       toast.error("Erro inesperado", {
         description: "Tente novamente mais tarde.",
       });
@@ -133,7 +90,6 @@ export default function LoginForm({ ...props }) {
     }
   }
 
-  console.log("formLogin", formLogin);
   return (
     // coloque um espaçamento entre os inputs com tailwindcss
     <div className="w-2/4">
