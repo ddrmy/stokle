@@ -1,8 +1,6 @@
-import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function RootLayout({
   children,

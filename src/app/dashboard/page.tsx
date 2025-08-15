@@ -1,6 +1,10 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Category } from "@/app/types/category";
+import { useState } from "react";
+
+const [categories, setCategories] = useState<Category[]>([]);
 
 export default async function Dashboard() {
   return (
