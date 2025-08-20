@@ -1,23 +1,23 @@
 import prisma from "@/lib/prisma";
+import { Product } from "@/types/product";
 
-export async function getAllProducts() {
+export async function getAllProducts(): Promise<Product[]> {
   return prisma.product.findMany({
-    include: { category: true },
+    include: { category: true }, // ⚡ aqui inclui a categoria
   });
 }
 
-export async function getProductById(id: string) {
+export async function getProductById(id: string): Promise<Product | null> {
   return prisma.product.findUnique({
     where: { id },
     include: { category: true },
   });
 }
 
-// Futuro: criar, editar, excluir produtos
 export async function createProduct(data: {
   description: string;
   color: string;
   categoryId: string;
-}) {
-  return prisma.product.create({ data });
+}): Promise<Product> {
+  return prisma.product.create({ data, include: { category: true } });
 }

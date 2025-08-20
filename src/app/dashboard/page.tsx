@@ -1,16 +1,22 @@
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { Category } from "@/app/types/category";
-import { useState } from "react";
+// src/app/dashboard/page.tsx
+import { getAllProducts } from "@/services/productService";
+import DashboardClient from "./_components/dashboardClient";
 
-const [categories, setCategories] = useState<Category[]>([]);
+export default async function DashboardPage() {
+  const products = await getAllProducts(); // Server Component
 
-export default async function Dashboard() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-start">
       <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
-      <p className="text-lg">Bem-vindo ao seu painel de controle!</p>
+      <p className="text-lg mb-6">Bem-vindo ao seu painel de controle!</p>
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
+      <DashboardClient products={products} />
     </div>
   );
 }
