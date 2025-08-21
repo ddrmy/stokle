@@ -1,5 +1,5 @@
 // src/app/dashboard/page.tsx
-import { getAllProducts } from "@/services/productService";
+import { getAllProducts } from "@/services/product/productService";
 import DashboardClient from "./_components/dashboardClient";
 
 export default async function DashboardPage() {
