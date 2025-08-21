@@ -63,7 +63,6 @@ export default function LoginForm({ ...props }) {
               await new Promise((resolve) => setTimeout(resolve, 1500));
               router.replace("/dashboard");
             } catch (err) {
-              console.error("Erro no redirecionamento: ", err);
               toast.error("Erro ao redirecionar", {
                 description: "Tente novamente mais tarde.",
               });
